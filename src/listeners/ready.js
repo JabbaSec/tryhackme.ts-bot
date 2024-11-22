@@ -1,20 +1,23 @@
-import { ApplyOptions } from '@sapphire/decorators';
-import { Listener } from '@sapphire/framework';
-import type { StoreRegistryValue } from '@sapphire/pieces';
-import { blue, gray, green, magenta, magentaBright, white, yellow } from 'colorette';
+const { Listener } = require('@sapphire/framework');
+const { blue, gray, green, magenta, magentaBright, white, yellow } = require('colorette');
 
 const dev = process.env.NODE_ENV !== 'production';
+const style = dev ? yellow : blue;
 
-@ApplyOptions<Listener.Options>({ once: true })
-export class UserEvent extends Listener {
-	private readonly style = dev ? yellow : blue;
+class UserEvent extends Listener {
+	constructor(context, options = {}) {
+		super(context, {
+			...options,
+			once: true
+		});
+	}
 
-	public override run() {
+	run() {
 		this.printBanner();
 		this.printStoreDebugInformation();
 	}
 
-	private printBanner() {
+	printBanner() {
 		const success = green('+');
 
 		const llc = dev ? magentaBright : white;
@@ -36,16 +39,20 @@ ${line03}${dev ? ` ${pad}${blc('<')}${llc('/')}${blc('>')} ${llc('DEVELOPMENT MO
 		);
 	}
 
-	private printStoreDebugInformation() {
+	printStoreDebugInformation() {
 		const { client, logger } = this.container;
 		const stores = [...client.stores.values()];
-		const last = stores.pop()!;
+		const last = stores.pop();
 
 		for (const store of stores) logger.info(this.styleStore(store, false));
 		logger.info(this.styleStore(last, true));
 	}
 
-	private styleStore(store: StoreRegistryValue, last: boolean) {
-		return gray(`${last ? '└─' : '├─'} Loaded ${this.style(store.size.toString().padEnd(3, ' '))} ${store.name}.`);
+	styleStore(store, last) {
+		return gray(`${last ? '└─' : '├─'} Loaded ${style(store.size.toString().padEnd(3, ' '))} ${store.name}.`);
 	}
 }
+
+module.exports = {
+	UserEvent
+};

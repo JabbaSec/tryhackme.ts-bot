@@ -30,6 +30,13 @@ class UserEvent extends Listener {
 		// Offset Pad
 		const pad = ' '.repeat(7);
 
+		console.log(String.raw`
+  _____           ____        _   __  __
+ |_   _| __ _   _| __ )  ___ | |_|  \/  | ___
+   | || '__| | | |  _ \ / _ \| __| |\/| |/ _ \
+   | || |  | |_| | |_) | (_) | |_| |  | |  __/
+   |_||_|   \__, |____/ \___/ \__|_|  |_|\___|
+            |___/                             `);
 		console.log(
 			String.raw`
 ${line01} ${pad}${blc('1.0.0')}
@@ -44,8 +51,8 @@ ${line03}${dev ? ` ${pad}${blc('<')}${llc('/')}${blc('>')} ${llc('DEVELOPMENT MO
 		const stores = [...client.stores.values()];
 		const last = stores.pop();
 
-		for (const store of stores) logger.info(this.styleStore(store, false));
-		logger.info(this.styleStore(last, true));
+		for (const store of stores) console.log(this.styleStore(store, false));
+		console.log(this.styleStore(last, true));
 	}
 
 	styleStore(store, last) {

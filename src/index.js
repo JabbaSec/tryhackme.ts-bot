@@ -1,14 +1,15 @@
 require('./lib/setup');
 
 const { LogLevel, SapphireClient, container } = require('@sapphire/framework');
-const { prefix, discord_token, database_url } = require('./config.json');
 const { GatewayIntentBits, Partials } = require('discord.js');
 const { PrismaClient } = require('@prisma/client');
+const { CustomLogger } = require('./lib/logger');
+const { commands } = require('./config.json');
 
 const client = new SapphireClient({
 	caseInsensitiveCommands: true,
 	logger: {
-		level: LogLevel.Debug
+		instance: new CustomLogger(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN)
 	},
 	shards: 'auto',
 	intents: [
@@ -31,7 +32,7 @@ const main = async () => {
 	const prisma = new PrismaClient({
 		datasources: {
 			db: {
-				url: database_url
+				url: process.env.DATABASE_URL
 			}
 		}
 	});
@@ -45,9 +46,11 @@ const main = async () => {
 		process.exit(1); // Exit the process on failure
 	}
 
+	container.commandsConfig = commands;
+
 	try {
 		client.logger.info('Logging in');
-		await client.login(discord_token);
+		await client.login(process.env.DISCORD_TOKEN);
 		client.logger.info('logged in');
 	} catch (error) {
 		client.logger.fatal(error);

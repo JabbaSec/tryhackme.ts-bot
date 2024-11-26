@@ -1,0 +1,27 @@
+{
+    "developers": [
+        302122762858922000
+    ],
+    "logging": {
+        "discordLevel": "Error",
+        "consoleLevel": "Info",
+        "embedEnabled": true
+    },
+    "commands": {
+        "socials": {
+            "enabled": true,
+            "description": "Checkout our socials.",
+            "preconditions": [
+                "DeveloperOnly"
+            ]
+        },
+        "ping": {
+            "enabled": true,
+            "description": "Check the bot's latency."
+        },
+        "config": {
+            "enabled": true,
+            "description": "Edit a config variable."
+        }
+    }
+}
